@@ -12,6 +12,7 @@ public class Cuenta {
     private String fechaApertura;
     private double saldo;
     private boolean esActiva;
+    private Usuario usuario;
 
     // CONSTRUCTOR
     public Cuenta(int numeroCuenta, int idCliente, String movimientos, String tipoCuenta, String fechaApertura, double saldo, boolean esActiva) {
@@ -58,6 +59,10 @@ public class Cuenta {
         return esActiva;
     }
 
+    public Usuario getUsuario(){
+        return usuario;
+    }
+
     // setters
     public void setNumeroCuenta(int numeroCuenta) {
         this.numeroCuenta = numeroCuenta;
@@ -85,6 +90,10 @@ public class Cuenta {
 
     public void setEsActiva(boolean esActiva){
         this.esActiva = esActiva;
+    }
+
+    public void setUsuario(Usuario usuario){
+        this.usuario = usuario;
     }
 
 }

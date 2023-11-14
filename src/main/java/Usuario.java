@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 public class Usuario {
 
     // ATRIBUTOS
@@ -169,6 +171,27 @@ public class Usuario {
 
     public void setEsActivo(boolean esActivo){
         this.esActivo = esActivo;
+    }
+
+    // funcionamiento
+
+    public boolean validarCredenciales(String nombreUsuario, String claveAcceso) {
+        return this.nombreUsuario.equals(nombreUsuario) && this.claveAcceso.equals(claveAcceso);
+    }
+    public void solicitarCredenciales() {
+        String nombre = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario: ");
+        String clave = JOptionPane.showInputDialog(null, "Ingrese su clave de acceso: ");
+
+        if (validarCredenciales(nombre, clave)) {
+            if (this.esActivo) {
+                JOptionPane.showMessageDialog(null, "Bienvenido " + this.nombre + " es un gusto que nos visite!");
+            } else {
+                JOptionPane.showMessageDialog(null, "El usuario esta inactivo");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No existe un usuario con el nombre: " + nombre);
+        }
+
     }
 
 }
