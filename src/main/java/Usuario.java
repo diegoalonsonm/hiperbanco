@@ -3,7 +3,7 @@ import javax.swing.*;
 public class Usuario {
 
     // ATRIBUTOS
-    private int id;
+    private String id;
     private String nombre;
     private String apellido1;
     private String apellido2;
@@ -18,7 +18,7 @@ public class Usuario {
     private boolean esActivo;
 
     // CONSTRUCTOR
-    public Usuario(int id, String nombre, String apellido1, String apellido2, int cedula, String correo, String telefono, String listaCuentas, int rol, String nombreUsuario, String claveAcceso, String historialTransacciones, boolean esActivo) {
+    public Usuario(String id, String nombre, String apellido1, String apellido2, int cedula, String correo, String telefono, String listaCuentas, int rol, String nombreUsuario, String claveAcceso, String historialTransacciones, boolean esActivo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido1 = apellido1;
@@ -36,7 +36,37 @@ public class Usuario {
 
     // METODOS
     // getters
-    public int getId() {
+    public String getDatos() {
+        String rolString;
+        String estado;
+
+        if (rol == 1) {
+            rolString = "Administrador";
+        } else if (rol == 2) {
+            rolString = "Cliente";
+        } else {
+            rolString = "Sin rol";
+        }
+
+        if (!esActivo) {
+            estado = "Inactivo";
+        } else {
+            estado = "Activo";
+        }
+
+        return "ID: " + id
+                + "\nNombre Completo: " + nombre + " " + apellido1 + " " + apellido2
+                + "\nCedula: " + cedula
+                + "\nTelefono: " + telefono
+                + "\nLista de Cuentas: " + listaCuentas
+                + "\nRol: " + rolString
+                + "\nNombre de usuario: " + nombreUsuario
+                + "\nHistorial de Transacciones: " + historialTransacciones
+                + "\nEstado: " + estado
+                + "\n";
+    }
+
+    public String getId() {
         return id;
     }
 
@@ -93,7 +123,7 @@ public class Usuario {
     }
 
     // setters
-    public void setId(int id){
+    public void setId(String id){
         this.id = id;
     }
 
@@ -171,27 +201,6 @@ public class Usuario {
 
     public void setEsActivo(boolean esActivo){
         this.esActivo = esActivo;
-    }
-
-    // funcionamiento
-
-    public boolean validarCredenciales(String nombreUsuario, String claveAcceso) {
-        return this.nombreUsuario.equals(nombreUsuario) && this.claveAcceso.equals(claveAcceso);
-    }
-    public void solicitarCredenciales() {
-        String nombre = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario: ");
-        String clave = JOptionPane.showInputDialog(null, "Ingrese su clave de acceso: ");
-
-        if (validarCredenciales(nombre, clave)) {
-            if (this.esActivo) {
-                JOptionPane.showMessageDialog(null, "Bienvenido " + this.nombre + " es un gusto que nos visite!");
-            } else {
-                JOptionPane.showMessageDialog(null, "El usuario esta inactivo");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "No existe un usuario con el nombre: " + nombre);
-        }
-
     }
 
 }
