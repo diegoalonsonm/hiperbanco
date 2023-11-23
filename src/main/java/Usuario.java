@@ -37,8 +37,8 @@ public class Usuario {
     // METODOS
     // getters
     public String getDatos() {
+        // convertir el rol a String
         String rolString;
-        String estado;
 
         if (rol == 1) {
             rolString = "Administrador";
@@ -48,16 +48,24 @@ public class Usuario {
             rolString = "Sin rol";
         }
 
+        // convertir el estado a String
+        String estado;
         if (!esActivo) {
             estado = "Inactivo";
         } else {
             estado = "Activo";
         }
 
+        // formatear el telefono
+        String primeraMitadnum = telefono.substring(0, 4);
+        String segundaMitadnum = telefono.substring(4, 8);
+        String telefonoFormateado = primeraMitadnum + "-" + segundaMitadnum;
+
         return "ID: " + id
                 + "\nNombre Completo: " + nombre + " " + apellido1 + " " + apellido2
                 + "\nCedula: " + cedula
-                + "\nTelefono: " + telefono
+                + "\nCorreo: " + correo
+                + "\nTelefono: " + telefonoFormateado
                 + "\nLista de Cuentas: " + listaCuentas
                 + "\nRol: " + rolString
                 + "\nNombre de usuario: " + nombreUsuario

@@ -6,16 +6,16 @@ public class Cuenta {
 
     // ATIRBUTOS
     private int numeroCuenta;
-    private int idCliente;
+    private String idCliente;
     private String movimientos;
-    private String tipoCuenta;
+    private int tipoCuenta;
     private String fechaApertura;
     private double saldo;
     private boolean esActiva;
     private Usuario usuario;
 
     // CONSTRUCTOR
-    public Cuenta(int numeroCuenta, int idCliente, String movimientos, String tipoCuenta, String fechaApertura, double saldo, boolean esActiva) {
+    public Cuenta(int numeroCuenta, String idCliente, String movimientos, int tipoCuenta, String fechaApertura, double saldo, boolean esActiva, Usuario usuario) {
         this.numeroCuenta = numeroCuenta;
         this.idCliente = idCliente;
         this.movimientos = movimientos;
@@ -23,6 +23,7 @@ public class Cuenta {
         this.fechaApertura = fechaApertura;
         this.saldo = saldo;
         this.esActiva = esActiva;
+        this.usuario = usuario;
     }
 
     // METODOS
@@ -31,7 +32,7 @@ public class Cuenta {
         return numeroCuenta;
     }
 
-    public int getIdCliente() {
+    public String getIdCliente() {
         return idCliente;
     }
 
@@ -39,7 +40,7 @@ public class Cuenta {
         return movimientos;
     }
 
-    public String getTipoCuenta(){
+    public int getTipoCuenta(){
         return tipoCuenta;
     }
 
@@ -68,7 +69,7 @@ public class Cuenta {
         this.numeroCuenta = numeroCuenta;
     }
 
-    public void setIdCliente(int idCliente) {
+    public void setIdCliente(String idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -76,7 +77,7 @@ public class Cuenta {
         this.movimientos = movimientos;
     }
 
-    public void setTipoCuenta(String tipoCuenta){
+    public void setTipoCuenta(int tipoCuenta){
         this.tipoCuenta = tipoCuenta;
     }
 

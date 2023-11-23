@@ -4,8 +4,9 @@ public class Main {
     public static void main(String[] args) {
 
         // creacion de arreglos
-        Usuario usuarios[] = new Usuario[10];
+        Usuario usuarios[] = new Usuario[30];
         Cuenta cuentas[] = new Cuenta[12];
+        boolean generados = false;
 
         // el usuario selecciona que menu quiere ver
         int opcion = Metodos.getBotones("Bienvenido a Hiperbanco! \n \nA cual menu desea acceder?", "Menu",
@@ -18,7 +19,7 @@ public class Main {
         }
 
         if (opcion == 0) {
-            Metodos.menuBanco(usuarios);
+            Metodos.menuBanco(usuarios, cuentas, generados);
         }
 
         if (opcion == 1) {
