@@ -8,6 +8,11 @@ public class Main {
         Cuenta cuentas[] = new Cuenta[12];
         boolean generados = false;
 
+        // instancia de prueba
+        usuarios[0] = new Usuario("000", "Juan", "Perez", "Mora", 1, "D@ac.c",
+                "88888888", "000", 1, "admin", "admin", "000",
+                true);
+
         // el usuario selecciona que menu quiere ver
         int opcion = Metodos.getBotones("Bienvenido a Hiperbanco! \n \nA cual menu desea acceder?", "Menu",
                 JOptionPane.QUESTION_MESSAGE, new String[]{"Banco", "Clientes", "Salir"});
@@ -23,7 +28,14 @@ public class Main {
         }
 
         if (opcion == 1) {
-            Metodos.menuCliente();
+            boolean estado = Metodos.solicitarUsuario(usuarios);
+
+            if (estado) {
+                Metodos.menuCliente();
+            } else {
+                Metodos.solicitarUsuario(usuarios);
+            }
+
         }
 
     }

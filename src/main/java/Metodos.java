@@ -68,16 +68,16 @@ public class Metodos {
         Cuenta cuentasGeneradas[] = new Cuenta[12];
 
         // creacion de usuarios
-        usuariosGenerados[0] = new Usuario("1", "Diego", "Naranjo", "Meza", 119150430, "diego@correo.com", "60469117", "lista", 1, "diegonm", "12-34-56", "activo", true);
-        usuariosGenerados[1] = new Usuario("2", "Maria", "Lopez", "Gomez", 219876543, "maria@correo.com", "60234567", "otra lista", 2, "marialg", "78-90-12", "activo", true);
-        usuariosGenerados[2] = new Usuario("3", "Carlos", "Fernandez", "Perez", 319654321, "carlos@correo.com", "60987654", "otra lista", 2, "carlosfp", "34-56-78", "activo", true);
-        usuariosGenerados[3] = new Usuario("4", "Ana", "Gonzalez", "Rodriguez", 419876543, "ana@correo.com", "60123456", "otra lista", 1, "anagr", "90-12-34", "inactivo", false);
-        usuariosGenerados[4] = new Usuario("5", "Luis", "Hernandez", "Diaz", 519654321, "luis@correo.com", "60987654", "otra lista", 2, "luishd", "56-78-90", "activo", true);
-        usuariosGenerados[5] = new Usuario("6", "Laura", "Serrano", "Blanco", 619876543, "laura@correo.com", "60234567", "otra lista", 2, "laurasb", "12-34-56", "activo", true);
-        usuariosGenerados[6] = new Usuario("7", "Pedro", "Molina", "Vargas", 719654321, "pedro@correo.com", "60987654", "otra lista", 1, "pedromv", "78-90-12", "activo", true);
-        usuariosGenerados[7] = new Usuario("8", "Elena", "Cabrera", "Castro", 819876543, "elena@correo.com", "60123456", "otra lista", 2, "elenacc", "34-56-78", "activo", true);
-        usuariosGenerados[8] = new Usuario("9", "Miguel", "Serrano", "Ruiz", 919654321, "miguel@correo.com", "60987654", "otra lista", 1, "miguelsr", "90-12-34", "inactivo", false);
-        usuariosGenerados[9] = new Usuario("10", "Isabel", "Ruiz", "Gomez", 1019876543, "isabel@correo.com", "60234567", "otra lista", 1, "isabelrg", "56-78-90", "activo", true);
+        usuariosGenerados[0] = new Usuario("", "Diego", "Naranjo", "Meza", 119150430, "diego@correo.com", "60469117", "lista", 1, "diegonm", "12-34-56", "activo", true);
+        usuariosGenerados[1] = new Usuario("", "Maria", "Lopez", "Gomez", 219876543, "maria@correo.com", "60234567", "otra lista", 2, "marialg", "78-90-12", "activo", true);
+        usuariosGenerados[2] = new Usuario("", "Carlos", "Fernandez", "Perez", 319654321, "carlos@correo.com", "60987654", "otra lista", 2, "carlosfp", "34-56-78", "activo", true);
+        usuariosGenerados[3] = new Usuario("", "Ana", "Gonzalez", "Rodriguez", 419876543, "ana@correo.com", "60123456", "otra lista", 1, "anagr", "90-12-34", "inactivo", false);
+        usuariosGenerados[4] = new Usuario("", "Luis", "Hernandez", "Diaz", 519654321, "luis@correo.com", "60987654", "otra lista", 2, "luishd", "56-78-90", "activo", true);
+        usuariosGenerados[5] = new Usuario("", "Laura", "Serrano", "Blanco", 619876543, "laura@correo.com", "60234567", "otra lista", 2, "laurasb", "12-34-56", "activo", true);
+        usuariosGenerados[6] = new Usuario("", "Pedro", "Molina", "Vargas", 719654321, "pedro@correo.com", "60987654", "otra lista", 1, "pedromv", "78-90-12", "activo", true);
+        usuariosGenerados[7] = new Usuario("", "Elena", "Cabrera", "Castro", 819876543, "elena@correo.com", "60123456", "otra lista", 2, "elenacc", "34-56-78", "activo", true);
+        usuariosGenerados[8] = new Usuario("", "Miguel", "Serrano", "Ruiz", 919654321, "miguel@correo.com", "60987654", "otra lista", 1, "miguelsr", "90-12-34", "inactivo", false);
+        usuariosGenerados[9] = new Usuario("", "Isabel", "Ruiz", "Gomez", 1019876543, "isabel@correo.com", "60234567", "otra lista", 1, "isabelrg", "56-78-90", "activo", true);
 
         // creacion de cuentas
         cuentasGeneradas[0] = new Cuenta(4710, "1", "movimientos", 1, "hoy", 250.75, true, usuariosGenerados[0]);
@@ -193,7 +193,7 @@ public class Metodos {
         String idBuscar = JOptionPane.showInputDialog(null, "Ingrese el ID del cliente: ");
 
         if (buscarUsuarioId(usuarios, idBuscar) == null) {
-            int opc = getBotones("El cliente con el ID " + idBuscar + "no se encuentra registrado en el sistema",
+            int opc = getBotones("El cliente con el ID " + idBuscar + " no se encuentra registrado en el sistema",
                     "Cliente no encontrado", JOptionPane.WARNING_MESSAGE, new String[]{"Ingresar otro ID", "Cancelar"});
             if (opc == 1 || opc == -1) {
                 return null;
@@ -203,7 +203,7 @@ public class Metodos {
         } else if (buscarUsuarioId(usuarios, idBuscar) != null) {
             String botonEstado;
 
-            if (usuarios[getIndexUsuario(usuarios)].getEsActivo()) {
+            if (buscarUsuarioId(usuarios, idBuscar).getEsActivo()) {
                 botonEstado = "Desactivar";
             } else {
                 botonEstado = "Activar";
@@ -214,15 +214,56 @@ public class Metodos {
 
             switch (opc) {
                 case 0:
-                    System.out.println("actualizar");
+                    int opt = getBotones("Que desea actualizar?", "Actualizar", JOptionPane.QUESTION_MESSAGE,
+                            new String[]{"Nombre completo", "Telefono", "Correo", "Cancelar"});
+
+                    switch (opt) {
+                        case 0:
+                            String nombre = JOptionPane.showInputDialog(null, "Ingrese su nombre: ");
+                            String ap1 = JOptionPane.showInputDialog(null, "Ingrese su primer apellido: ");
+                            String ap2 = JOptionPane.showInputDialog(null, "Ingrese su segundo apellido: ");
+                            buscarUsuarioId(usuarios, idBuscar).setNombre(nombre);
+                            buscarUsuarioId(usuarios, idBuscar).setApellido1(ap1);
+                            buscarUsuarioId(usuarios, idBuscar).setApellido2(ap2);
+                            JOptionPane.showMessageDialog(null, "Datos actualizados con exito");
+                            break;
+                        case 1:
+                            String telefono = JOptionPane.showInputDialog(null, "Ingrese su numero telefonico: ");
+                            buscarUsuarioId(usuarios, idBuscar).setTelefono(telefono);
+                            JOptionPane.showMessageDialog(null, "Datos actualizados con exito");
+                            break;
+                        case 2:
+                            String correo = JOptionPane.showInputDialog(null, "Ingrese su correo electornico: ");
+                            if (validarCorreo(correo)) {
+                                correo = correo;
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Correo invalido");
+                                int opc2 = getBotones("Desea ingresar otro correo?", "Correo invalido", JOptionPane.WARNING_MESSAGE,
+                                        new String[]{"Agregar otro correo", "Cancelar"});
+                                if (opc2 == 0) {
+                                    correo = JOptionPane.showInputDialog(null, "Ingrese su correo electornico: ");
+                                    validarCorreo(correo);
+                                } else {
+                                    return null;
+                                }
+                            }
+                            buscarUsuarioId(usuarios, idBuscar).setCorreo(correo);
+                            JOptionPane.showMessageDialog(null, "Datos actualizados con exito");
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            break;
+                    }
+
                     break;
                 case 1:
-                    if (usuarios[getIndexUsuario(usuarios)].getEsActivo()) {
+                    if (buscarUsuarioId(usuarios, idBuscar).getEsActivo()) {
                         JOptionPane.showMessageDialog(null, "El cliente se ha desactivado de forma correcta");
-                        usuarios[getIndexUsuario(usuarios)].setEsActivo(false);
+                        buscarUsuarioId(usuarios, idBuscar).setEsActivo(false);
                     } else {
                         JOptionPane.showMessageDialog(null, "El cliente se ha activado de forma correcta");
-                        usuarios[getIndexUsuario(usuarios)].setEsActivo(true);
+                        buscarUsuarioId(usuarios, idBuscar).setEsActivo(true);
                     }
                     break;
                 case 2:
@@ -257,6 +298,32 @@ public class Metodos {
                 break;
             case 3:
                 System.out.println("salir");
+                break;
+            default:
+                System.out.println("opcion invalida");
+                break;
+        }
+    }
+
+    public static void realizarTransacion() {
+        int opc = getBotones("Que desea realizar?", "Realizar Transaccion", JOptionPane.QUESTION_MESSAGE,
+                new String[]{"Deposito", "Retiro", "Transferencia", "Compra", "Cancelar"});
+
+        switch (opc) {
+            case 0:
+
+                break;
+            case 1:
+                System.out.println("retiro");
+                break;
+            case 2:
+                System.out.println("transferencia");
+                break;
+            case 3:
+                System.out.println("compra");
+                break;
+            case 4:
+                System.out.println("cancelar");
                 break;
             default:
                 System.out.println("opcion invalida");
@@ -301,6 +368,45 @@ public class Metodos {
             }
         }
         return null;
+    }
+
+    private static Usuario buscarUsuarioNombre(Usuario usuarios[], String nombreBuscar) {
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] == null) {
+                return null;
+            }
+            if (usuarios[i].getNombreUsuario().equalsIgnoreCase(nombreBuscar)) {
+                return usuarios[i];
+            }
+        }
+        return null;
+    }
+
+    public static boolean solicitarUsuario(Usuario usuarios[]) {
+        String usuario = JOptionPane.showInputDialog(null, "Ingrese su nombre de usuario: ");
+        Usuario usuarioEncontrar = buscarUsuarioNombre(usuarios, usuario);
+
+        if (usuarioEncontrar == null) {
+            JOptionPane.showMessageDialog(null, "No hay ningun cliente con el usuario " + usuario);
+            return false;
+        }
+
+        if (usuarioEncontrar.getNombreUsuario().equalsIgnoreCase(usuario)) {
+            boolean estado = usuarioEncontrar.getEsActivo();
+
+            if (!estado) {
+                JOptionPane.showMessageDialog(null, "El cliente esta inactivo");
+                solicitarUsuario(usuarios);
+                return false;
+            } else {
+                JOptionPane.showMessageDialog(null, "Si paso");
+                return true;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No hay ningun cliente con el usuario " + usuario);
+            solicitarUsuario(usuarios);
+        }
+        return false;
     }
 
 
