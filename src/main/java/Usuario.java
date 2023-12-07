@@ -1,37 +1,45 @@
-import javax.swing.*;
-
 public class Usuario {
 
     // ATRIBUTOS
-    private String id;
+    public int id;
     private String nombre;
     private String apellido1;
     private String apellido2;
     private int cedula;
     private String correo;
     private String telefono;
-    private String listaCuentas;
+    private Cuenta[] listaCuentas;
     private int rol;
     private String nombreUsuario;
     private String claveAcceso;
-    private String historialTransacciones;
+    private Transaccion[] historialTransacciones;
     private boolean esActivo;
+    private static int contadorUsuarios = 40;
+    private int tarjetaAcceso[][];
 
     // CONSTRUCTOR
-    public Usuario(String id, String nombre, String apellido1, String apellido2, int cedula, String correo, String telefono, String listaCuentas, int rol, String nombreUsuario, String claveAcceso, String historialTransacciones, boolean esActivo) {
-        this.id = id;
+    public Usuario(String nombre, String apellido1, String apellido2, int cedula, String correo, String telefono, Cuenta[] listaCuentas, int rol, String claveAcceso, String historialTransacciones, boolean esActivo) {
+        this.id = contadorUsuarios;
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.cedula = cedula;
         this.correo = correo;
         this.telefono = telefono;
-        this.listaCuentas = listaCuentas;
+        this.listaCuentas = new Cuenta[5];
         this.rol = rol;
-        this.nombreUsuario = nombreUsuario;
+        this.nombreUsuario = nombre.toLowerCase() + contadorUsuarios;
         this.claveAcceso = claveAcceso;
-        this.historialTransacciones = historialTransacciones;
+        this.historialTransacciones = new Transaccion[50];
         this.esActivo = esActivo;
+        contadorUsuarios++;
+
+        this.tarjetaAcceso = new int[4][5];
+        for (int i = 0; i < tarjetaAcceso.length; i++) {
+            for (int j = 0; j < tarjetaAcceso[i].length; j++) {
+                tarjetaAcceso[i][j] = aleatorio(10, 99);
+            }
+        }
     }
 
     // METODOS
@@ -39,7 +47,6 @@ public class Usuario {
     public String getDatos() {
         // convertir el rol a String
         String rolString;
-
         if (rol == 1) {
             rolString = "Administrador";
         } else if (rol == 2) {
@@ -54,6 +61,23 @@ public class Usuario {
             estado = "Inactivo";
         } else {
             estado = "Activo";
+        }
+
+        // hacer legible la lista de cuentas
+        String listaCuentas;
+        if (this.listaCuentas == null) {
+            listaCuentas = "Sin cuentas";
+        } else {
+            if (this.listaCuentas.length == 0) {
+                listaCuentas = "Sin cuentas asignadas";
+            } else {
+                listaCuentas = "";
+                for (int i = 0; i < this.listaCuentas.length; i++) {
+                    if (this.listaCuentas[i] != null) {
+                        listaCuentas += this.listaCuentas[i].getNumeroCuenta() + ", ";
+                    }
+                }
+            }
         }
 
         // formatear el telefono
@@ -74,7 +98,11 @@ public class Usuario {
                 + "\n";
     }
 
-    public String getId() {
+    public int aleatorio(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public int getId() {
         return id;
     }
 
@@ -91,7 +119,7 @@ public class Usuario {
     }
 
     public String getNombreCompleto(){
-        return nombre + apellido1 + apellido2;
+        return nombre + " " + apellido1 + " " + apellido2;
     }
 
     public int getCedula(){
@@ -106,7 +134,7 @@ public class Usuario {
         return telefono;
     }
 
-    public String getListaCuentas(){
+    public Cuenta[] getListaCuentas(){
         return listaCuentas;
     }
 
@@ -122,7 +150,7 @@ public class Usuario {
         return claveAcceso;
     }
 
-    public String getHistorialTransacciones(){
+    public Transaccion[] getHistorialTransacciones(){
         return historialTransacciones;
     }
 
@@ -131,7 +159,7 @@ public class Usuario {
     }
 
     // setters
-    public void setId(String id){
+    public void setId(int id){
         this.id = id;
     }
 
@@ -175,7 +203,7 @@ public class Usuario {
         }
     }
 
-    public void setListaCuentas(String listaCuentas){
+    public void setListaCuentas(Cuenta[] listaCuentas){
         this.listaCuentas = listaCuentas;
     }
 
@@ -203,12 +231,44 @@ public class Usuario {
         }
     }
 
-    public void setHistorialTransacciones(String historialTransacciones){
+    public void setHistorialTransacciones (Transaccion[] historialTransacciones){
         this.historialTransacciones = historialTransacciones;
     }
 
     public void setEsActivo(boolean esActivo){
         this.esActivo = esActivo;
     }
+
+    public void setTarjetaAcceso(int[][] tarjetaAcceso){
+        this.tarjetaAcceso = tarjetaAcceso;
+    }
+
+    public int[][] getTarjetaAcceso(){
+        return tarjetaAcceso;
+    }
+
+    public String mostrarTarjetaAcceso() {
+        char letra = 'A';
+        int numero = 1;
+
+        // Mostrar la fila con las letras
+        System.out.print("    ");
+        for (int i = 0; i < tarjetaAcceso[0].length; i++) {
+            System.out.print("[" + letra++ + "]");
+            System.out.print(" ");
+        }
+        System.out.println();
+
+        // Mostrar la matriz
+        for (int i = 0; i < tarjetaAcceso.length; i++) {
+            System.out.print("[" + numero++ + "] ");
+            for (int j = 0; j < tarjetaAcceso[i].length; j++) {
+                System.out.print("[" + tarjetaAcceso[i][j] + "]");
+            }
+            System.out.println();
+        }
+        return "";
+    }
+
 
 }

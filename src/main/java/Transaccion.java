@@ -1,5 +1,3 @@
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Transaccion {
@@ -10,22 +8,50 @@ public class Transaccion {
     private Cuenta cuentaFinal;
     private String detalle;
     private double monto;
-    private String fechaTransaccion;
+    private Date fechaTransaccion;
     private boolean esActiva;
+    private static int contadorTransacciones = 10000;
 
     // CONSTRUCTOR
-    public Transaccion(int id, Cuenta cuentaProveedora, Cuenta cuentaFinal, String detalle, double monto, String fecha, boolean esActiva) {
-        this.id = id;
+    public Transaccion(Cuenta cuentaProveedora, Cuenta cuentaFinal, String detalle, double monto) {
+        this.id = contadorTransacciones;
         this.cuentaProveedora = cuentaProveedora;
         this.cuentaFinal = cuentaFinal;
         this.detalle = detalle;
         this.monto = monto;
-        this.fechaTransaccion = fecha;
-        this.esActiva = esActiva;
+        this.fechaTransaccion = new java.sql.Date(System.currentTimeMillis());;
+        this.esActiva = true;
+        contadorTransacciones++;
     }
 
     // METODOS
     // getters
+    public String getDatos () {
+        // convertir el estado a String
+        String estado;
+        if (!esActiva) {
+            estado = "Inactivo";
+        } else {
+            estado = "Activo";
+        }
+
+        // revisar si hay fuenta final
+        String cuentaFinalString;
+        if (cuentaFinal == null) {
+            cuentaFinalString = "N/A";
+        } else {
+            cuentaFinalString = cuentaFinal.getNumeroCuenta() + "";
+        }
+
+        return "Cuenta proveedora: " + cuentaProveedora.getNumeroCuenta() + "\n" +
+                "Cuenta final: " + cuentaFinalString + "\n" +
+                "Detalle: " + detalle + "\n" +
+                "Monto: " + monto + "\n" +
+                "Fecha de transaccion: " + fechaTransaccion + "\n" +
+                "Estado: " + estado;
+
+    }
+
     public int getId() {
         return id;
     }
@@ -46,11 +72,7 @@ public class Transaccion {
         return monto;
     }
 
-    public String getFecha(){
-        Date fecha = new Date();
-        DateFormat formato = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
-
-        fechaTransaccion = formato.format(fecha);
+    public Date getFecha(){
         return fechaTransaccion;
     }
 
@@ -79,7 +101,7 @@ public class Transaccion {
         this.monto = monto;
     }
 
-    public void setFecha(String fecha){
+    public void setFecha(Date fecha){
         this.fechaTransaccion = fecha;
     }
 

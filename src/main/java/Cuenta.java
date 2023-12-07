@@ -6,49 +6,93 @@ public class Cuenta {
 
     // ATIRBUTOS
     private int numeroCuenta;
-    private String idCliente;
-    private String movimientos;
-    private int tipoCuenta;
-    private String fechaApertura;
+    private int idCliente;
+    private Transaccion[] movimientos;
+    private TipoCuenta tipoCuenta;
+    private Date fechaApertura;
     private double saldo;
     private boolean esActiva;
     private Usuario usuario;
+    private static int contadorCuentas = 4710;
 
     // CONSTRUCTOR
-    public Cuenta(int numeroCuenta, String idCliente, String movimientos, int tipoCuenta, String fechaApertura, double saldo, boolean esActiva, Usuario usuario) {
-        this.numeroCuenta = numeroCuenta;
+    public Cuenta(int idCliente, TipoCuenta tipoCuenta, double saldo, boolean esActiva, Usuario usuario) {
+        this.numeroCuenta = contadorCuentas;
         this.idCliente = idCliente;
-        this.movimientos = movimientos;
+        this.movimientos = new Transaccion[50];
         this.tipoCuenta = tipoCuenta;
-        this.fechaApertura = fechaApertura;
+        this.fechaApertura = new java.sql.Date(System.currentTimeMillis());
         this.saldo = saldo;
         this.esActiva = esActiva;
         this.usuario = usuario;
+        contadorCuentas++;
     }
 
     // METODOS
     // getters
+    public String getDatos() {
+        // convertir el estado a String
+        String estadoString;
+        if (!esActiva) {
+            estadoString = "Inactiva";
+        } else {
+            estadoString = "Activa";
+        }
+
+        // convertir tipo de cuenta a String
+        String tipoCuentaString;
+        if (tipoCuenta == TipoCuenta.CUENTA_CORRIENTE) {
+            tipoCuentaString = "Cuenta corriente";
+        } else if (tipoCuenta == TipoCuenta.AHORROS) {
+            tipoCuentaString = "Ahorros";
+        } else if (tipoCuenta == TipoCuenta.INVERSION) {
+            tipoCuentaString = "Inversion";
+        } else {
+            tipoCuentaString = "Planilla";
+        }
+
+        // convertir la fecha a String
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaAperturaString = dateFormat.format(fechaApertura);
+
+        // retornar los datos
+        return "Numero de cuenta: " + numeroCuenta + "\n" +
+                "ID del cliente: " + idCliente + "\n" +
+                "Movimientos: " + movimientos + "\n" +
+                "Tipo de cuenta: " + tipoCuentaString + "\n" +
+                "Fecha de apertura: " + fechaAperturaString + "\n" +
+                "Saldo: " + saldo + "\n" +
+                "Estado: " + estadoString + "\n" +
+                "Usuario: " + usuario.getNombreUsuario() + "\n";
+    }
+
     public int getNumeroCuenta() {
         return numeroCuenta;
     }
 
-    public String getIdCliente() {
+    public int getIdCliente() {
         return idCliente;
     }
 
-    public String getMovimientos(){
+    public Transaccion[] getMovimientos(){
         return movimientos;
     }
 
-    public int getTipoCuenta(){
-        return tipoCuenta;
+    public String getTipoCuenta(){
+        String tipoCuentaString;
+        if (tipoCuenta == TipoCuenta.CUENTA_CORRIENTE) {
+            tipoCuentaString = "Cuenta corriente";
+        } else if (tipoCuenta == TipoCuenta.AHORROS) {
+            tipoCuentaString = "Ahorros";
+        } else if (tipoCuenta == TipoCuenta.INVERSION) {
+            tipoCuentaString = "Inversion";
+        } else {
+            tipoCuentaString = "Planilla";
+        }
+        return tipoCuentaString;
     }
 
-    public String getFechaApertura(){
-        Date fecha = new Date();
-        DateFormat formato = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
-
-        fechaApertura = formato.format(fecha);
+    public Date getFechaApertura(){
         return fechaApertura;
     }
 
@@ -56,8 +100,14 @@ public class Cuenta {
         return saldo;
     }
 
-    public boolean getEsActiva(){
-        return esActiva;
+    public String getEsActiva() {
+        String estado;
+        if (esActiva) {
+            estado = "Activa";
+        } else {
+            estado = "Inactiva";
+        }
+        return estado;
     }
 
     public Usuario getUsuario(){
@@ -69,19 +119,19 @@ public class Cuenta {
         this.numeroCuenta = numeroCuenta;
     }
 
-    public void setIdCliente(String idCliente) {
+    public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
     }
 
-    public void setMovimientos(String movimientos){
+    public void setMovimientos(Transaccion[] movimientos){
         this.movimientos = movimientos;
     }
 
-    public void setTipoCuenta(int tipoCuenta){
+    public void setTipoCuenta(TipoCuenta tipoCuenta){
         this.tipoCuenta = tipoCuenta;
     }
 
-    public void setFechaApertura(String fechaApertura){
+    public void setFechaApertura(Date fechaApertura){
         this.fechaApertura = fechaApertura;
     }
 
