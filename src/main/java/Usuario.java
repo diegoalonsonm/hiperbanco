@@ -216,19 +216,7 @@ public class Usuario {
     }
 
     public void setClaveAcceso(String claveAcceso){
-        if(claveAcceso.length() != 8){
-            System.out.println("La clave de acceso debe tener 8 digitos");
-        } else {
-            if(claveAcceso.substring(2,3).equals("-")){
-                if(claveAcceso.substring(5, 6).equals("-")){
-                    this.claveAcceso = claveAcceso;
-                } else {
-                    System.out.println("Las parejas de la clave de acceso deben estar separadas por un guion");
-                }
-            } else {
-                System.out.println("Las parejas de la clave de acceso deben estar separadas por un guion");
-            }
-        }
+        this.claveAcceso = claveAcceso;
     }
 
     public void setHistorialTransacciones (Transaccion[] historialTransacciones){
@@ -247,28 +235,92 @@ public class Usuario {
         return tarjetaAcceso;
     }
 
-    public String mostrarTarjetaAcceso() {
+    public void mostrarTarjetaAcceso() {
         char letra = 'A';
         int numero = 1;
 
-        // Mostrar la fila con las letras
+        // Mostrar la fila con los números de las columnas
         System.out.print("    ");
         for (int i = 0; i < tarjetaAcceso[0].length; i++) {
-            System.out.print("[" + letra++ + "]");
+            System.out.print("[" + (i + 1) + "]");
             System.out.print(" ");
         }
         System.out.println();
 
         // Mostrar la matriz
         for (int i = 0; i < tarjetaAcceso.length; i++) {
-            System.out.print("[" + numero++ + "] ");
+            System.out.print("[" + letra++ + "] ");
             for (int j = 0; j < tarjetaAcceso[i].length; j++) {
                 System.out.print("[" + tarjetaAcceso[i][j] + "]");
             }
             System.out.println();
         }
-        return "";
     }
 
+    public String[] seleccionarPosicones() {
+        String[] posiciones = new String[3];
+
+        for (int i = 0; i < 3; i++) {
+            int fila = (int) (Math.random() * 4);
+            int columna = (int) (Math.random() * 5);
+
+            char letra = (char) ('A' + fila);
+            int numero = columna;
+
+            posiciones[i] = letra + "" + numero;
+        }
+        return posiciones;
+    }
+
+    public String generarClaveAcceso(String[] posiciones) {
+        String clave = "";
+        for (int i = 0; i < posiciones.length; i++) {
+            String posicion = posiciones[i];
+            char letra = posicion.charAt(0);
+            int numero = Integer.parseInt(posicion.substring(1));
+
+            int fila = letra - 'A';
+            int valor = tarjetaAcceso[fila][numero];
+
+            clave += valor;
+            if (i < posiciones.length - 1) {
+                clave += "-";
+            }
+        }
+        return clave;
+    }
+
+    public String mostrarPosiciones(String clave) {
+        String[] numeros = clave.split("-");
+        String posiciones = "";
+
+        for (int k = 0; k < numeros.length; k++) {
+            int valor = Integer.parseInt(numeros[k]);
+            boolean encontrado = false;
+
+            for (int i = 0; i < tarjetaAcceso.length; i++) {
+                for (int j = 0; j < tarjetaAcceso[i].length; j++) {
+                    if (tarjetaAcceso[i][j] == valor) {
+                        char letra = (char) ('A' + i);
+                        int numero = j + 1;
+                        posiciones += numero + "" + letra;
+
+                        if (k < numeros.length - 1) {
+                            posiciones += "-";
+                        }
+
+                        encontrado = true;
+                        break;
+
+                    }
+                }
+                if (encontrado) {
+                    break;
+                }
+            }
+
+        }
+        return posiciones;
+    }
 
 }

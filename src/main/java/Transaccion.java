@@ -43,11 +43,11 @@ public class Transaccion {
             cuentaFinalString = cuentaFinal.getNumeroCuenta() + "";
         }
 
-        return "Cuenta proveedora: " + cuentaProveedora.getNumeroCuenta() + "\n" +
-                "Cuenta final: " + cuentaFinalString + "\n" +
-                "Detalle: " + detalle + "\n" +
-                "Monto: " + monto + "\n" +
-                "Fecha de transaccion: " + fechaTransaccion + "\n" +
+        return "Cuenta proveedora: " + cuentaProveedora.getNumeroCuenta() + " " +
+                "Cuenta final: " + cuentaFinalString + " " +
+                "Detalle: " + detalle + " " +
+                "Monto: " + monto + " " +
+                "Fecha de transaccion: " + fechaTransaccion + " " +
                 "Estado: " + estado;
 
     }

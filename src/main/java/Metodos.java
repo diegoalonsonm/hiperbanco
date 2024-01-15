@@ -26,7 +26,7 @@ public class Metodos {
             switch (opc) {
                 case 1:
                     if (!generados) {
-                        generarDatos(usuarios, cuentas);
+                        generarDatos(usuarios, cuentas, transacciones);
                         generados = true;
                     } else {
                         JOptionPane.showMessageDialog(null, "Los datos ya se agregaron al sistema");
@@ -68,10 +68,11 @@ public class Metodos {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // generar datos
-    private static void generarDatos(Usuario usuarios[], Cuenta cuentas[]) {
+    private static void generarDatos(Usuario usuarios[], Cuenta cuentas[], Transaccion[] transacciones) {
 
         Usuario usuariosGenerados[] = new Usuario[10];
         Cuenta cuentasGeneradas[] = new Cuenta[12];
+        Transaccion transaccionesGeneradas[] = new Transaccion[25];
         Cuenta cuentasPorUsuario[] = new Cuenta[5];
 
         // creacion de usuarios
@@ -272,7 +273,6 @@ public class Metodos {
 
                 opcionesBotones[cuentaCount + 3] = "Cancelar";
 
-
                 switch (cuentaCount) {
                     // una cuenta
                     case 1:
@@ -296,7 +296,7 @@ public class Metodos {
                                 System.out.println(" ");
                                 break;
                             case 3:
-                                System.out.println("movimientos");
+                                mostrarTransacciones(buscarUsuarioId(usuarios, idBuscar).getHistorialTransacciones());
                                 break;
                             default:
                                 break;
@@ -456,22 +456,23 @@ public class Metodos {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // menu cliente
-    public static void menuCliente(Cuenta cuentas[], Usuario usuario, Usuario usuarios[]) {
+    public static void menuCliente(Cuenta cuentas[], Usuario usuario, Usuario usuarios[], Transaccion transacciones[]) {
         int opc = getBotones("Bienvenido al Menu Cliente\n Seleccione una opcion", "Menu Cliente",
                 JOptionPane.QUESTION_MESSAGE, new String[]{"Realizar Transacciones", "Mis Cuentas", "Actualizar", "Salir"});
 
         switch (opc) {
             case 0:
-                realizarTransaccion(cuentas, usuario, usuarios);
-                menuCliente(cuentas, usuario, usuarios);
+                realizarTransaccion(cuentas, usuario, usuarios, transacciones);
+                menuCliente(cuentas, usuario, usuarios, transacciones);
                 break;
             case 1:
                 mostrarCuentas(usuario.getListaCuentas());
-                menuCliente(cuentas, usuario, usuarios);
+                mostrarTransacciones(usuario.getHistorialTransacciones());
+                menuCliente(cuentas, usuario, usuarios, transacciones);
                 break;
             case 2:
                 actualizarUsuario(usuarios, usuario.getId());
-                menuCliente(cuentas, usuario, usuarios);
+                menuCliente(cuentas, usuario, usuarios, transacciones);
                 break;
             case 3:
                 JOptionPane.showMessageDialog(null, "Gracias por visitarnos!");
@@ -550,6 +551,7 @@ public class Metodos {
                 solicitarUsuario(usuarios);
                 return null;
             } else {
+                solicitarClaveAcceso(usuarioEncontrar);
                 JOptionPane.showMessageDialog(null, "Bienvenido " + usuarioEncontrar.getNombre() + "!");
                 return usuarioEncontrar;
             }
@@ -558,6 +560,22 @@ public class Metodos {
             solicitarUsuario(usuarios);
         }
         return null;
+    }
+
+    private static void solicitarClaveAcceso(Usuario usuarioEncontrar) {
+        usuarioEncontrar.mostrarTarjetaAcceso();
+
+        String[] posiciones = usuarioEncontrar.seleccionarPosicones();
+        String claveGenerada = usuarioEncontrar.generarClaveAcceso(posiciones);
+        String posicionesClave = usuarioEncontrar.mostrarPosiciones(claveGenerada);
+        String claveAcceso = JOptionPane.showInputDialog(null, "Ingrese su clave de acceso segun las siguientes posiciones " + posicionesClave + " en formato (XX-XX-XX)");
+
+        if (claveAcceso != null && claveAcceso.equals(claveGenerada)) {
+            JOptionPane.showMessageDialog(null, "Clave correcta");
+        } else {
+            JOptionPane.showMessageDialog(null, "Clave incorrecta");
+            solicitarClaveAcceso(usuarioEncontrar);
+        }
     }
 
     private static void actualizarUsuario(Usuario usuarios[], int idBuscar) {
@@ -735,6 +753,7 @@ public class Metodos {
 
     private static Cuenta buscarCuenta(Cuenta cuentas[]) {
         int numCuenta = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el numero de cuenta: "));
+        Cuenta cuentaEncontrar = null;
 
         if (buscarCuentaNumero(cuentas, numCuenta) == null) {
             int opc = getBotones("La cuenta con el numero " + numCuenta + " no se encuentra registrada en el sistema",
@@ -745,40 +764,40 @@ public class Metodos {
                 return buscarCuenta(cuentas);
             }
         } else {
+            cuentaEncontrar = buscarCuentaNumero(cuentas, numCuenta);
             int opt = getBotones("Que desea hacer?", "Cuenta encontrada", JOptionPane.QUESTION_MESSAGE,
                     new String[]{"Ver movimientos", "Cancelar"});
 
             if (opt == 1 || opt == -1) {
                 return null;
             } else if (opt == 0) {
-                System.out.println("ver movimientos");
+                mostrarTransacciones(cuentaEncontrar.getMovimientos());
             }
         }
         return null;
     }
 
     // transacciones
-    private static void realizarTransaccion(Cuenta cuentas[], Usuario usuario, Usuario usuarios[]) {
+    private static void realizarTransaccion(Cuenta cuentas[], Usuario usuario, Usuario usuarios[], Transaccion transacciones[]) {
         int tipoTransaccion = getBotones("Que tipo de transaccion desea realizar?", "Tipo de transaccion",
                 JOptionPane.DEFAULT_OPTION, new String[]{"Deposito", "Retiro", "Transferencia", "Compra", "Cancelar"});
         Cuenta cuentaTransaccion = null;
-        int cantidadTransacciones = 0;
 
         switch (tipoTransaccion) {
             case 0:
-                realizarDeposito(usuario, cuentas, cuentaTransaccion, usuarios, usuario.getHistorialTransacciones(), cantidadTransacciones);
+                realizarDeposito(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
                 break;
             case 1:
-                realizarRetiro(usuario, cuentas, cuentaTransaccion, usuarios, usuario.getHistorialTransacciones(), cantidadTransacciones);
+                realizarRetiro(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
                 break;
             case 2:
-                realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, usuario.getHistorialTransacciones(), cantidadTransacciones);
+                realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
                 break;
             case 3:
-                realizarCompra(usuario, cuentas, cuentaTransaccion, usuarios, usuario.getHistorialTransacciones(), cantidadTransacciones);
+                realizarCompra(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
                 break;
             case 4:
-                realizarCompra(usuario, cuentas, cuentaTransaccion, usuarios, usuario.getHistorialTransacciones(), cantidadTransacciones);
+                JOptionPane.showMessageDialog(null, "Regresando al menu");
                 break;
             default:
                 break;
@@ -786,7 +805,7 @@ public class Metodos {
 
     }
 
-    private static void realizarDeposito(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones, int cantidadTransacciones) {
+    private static void realizarDeposito(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones) {
         int cuentaCount = 0;
         for (int i = 0; i < usuario.getListaCuentas().length; i++) {
             if (usuario.getListaCuentas()[i] != null) {
@@ -796,7 +815,7 @@ public class Metodos {
 
         if (cuentaCount == 0) {
             JOptionPane.showMessageDialog(null, "Usted no tiene cuentas asociadas");
-            menuCliente(cuentas, usuario, usuarios);
+            menuCliente(cuentas, usuario, usuarios, transacciones);
         } else if (cuentaCount == 1) {
             cuentaTransaccion = usuario.getListaCuentas()[0];
         } else {
@@ -817,16 +836,27 @@ public class Metodos {
         String detalleTransaccion = JOptionPane.showInputDialog(null, "Ingrese el detalle de la transaccion: ");
 
         Transaccion nuevoDeposito = new Transaccion(cuentaTransaccion, null, detalleTransaccion, saldoDeposito);
-
-        if (cantidadTransacciones < transacciones.length) {
-            transacciones[cantidadTransacciones] = nuevoDeposito;
-            cantidadTransacciones++;
-        }
+        transacciones[getIndexTransaccion(transacciones)] = nuevoDeposito;
 
         JOptionPane.showMessageDialog(null, "Deposito exitoso");
+
+        // asignar la transaccion al usuario
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] != null) {
+                if (usuarios[i].getId() == usuario.getId()) {
+                    for (int j = 0; j < usuarios[i].getHistorialTransacciones().length; j++) {
+                        if (usuarios[i].getHistorialTransacciones()[j] == null) {
+                            usuarios[i].getHistorialTransacciones()[j] = nuevoDeposito;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
-    private static void realizarRetiro(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones, int cantidadTransacciones) {
+    private static void realizarRetiro(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones) {
         int cuentaCount = 0;
         for (int i = 0; i < usuario.getListaCuentas().length; i++) {
             if (usuario.getListaCuentas()[i] != null) {
@@ -836,7 +866,7 @@ public class Metodos {
 
         if (cuentaCount == 0) {
             JOptionPane.showMessageDialog(null, "Usted no tiene cuentas asociadas");
-            menuCliente(cuentas, usuario, usuarios);
+            menuCliente(cuentas, usuario, usuarios, transacciones);
         } else if (cuentaCount == 1) {
             cuentaTransaccion = usuario.getListaCuentas()[0];
         } else {
@@ -856,7 +886,7 @@ public class Metodos {
 
         if (saldoRetiro > cuentaTransaccion.getSaldo()) {
             JOptionPane.showMessageDialog(null, "El monto a retirar es mayor al saldo de la cuenta");
-            realizarRetiro(usuario, cuentas, cuentaTransaccion, usuarios, transacciones, cantidadTransacciones);
+            realizarRetiro(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
         } else {
             cuentaTransaccion.setSaldo(cuentaTransaccion.getSaldo() - saldoRetiro);
         }
@@ -864,18 +894,27 @@ public class Metodos {
         String detalleTransaccion = JOptionPane.showInputDialog(null, "Ingrese el detalle de la transaccion: ");
 
         Transaccion nuevoRetiro = new Transaccion(cuentaTransaccion, null, detalleTransaccion, saldoRetiro);
-
-        if (cantidadTransacciones < transacciones.length) {
-            transacciones[cantidadTransacciones] = nuevoRetiro;
-            cantidadTransacciones++;
-        }
-
-        System.out.println(transacciones[cantidadTransacciones - 1]);
+        transacciones[getIndexTransaccion(transacciones)] = nuevoRetiro;
 
         JOptionPane.showMessageDialog(null, "Retiro exitoso");
+
+        // asignar la transaccion al usuario
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] != null) {
+                if (usuarios[i].getId() == usuario.getId()) {
+                    for (int j = 0; j < usuarios[i].getHistorialTransacciones().length; j++) {
+                        if (usuarios[i].getHistorialTransacciones()[j] == null) {
+                            usuarios[i].getHistorialTransacciones()[j] = nuevoRetiro;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
-    private static void realizarTransferencia(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones, int cantidadTransacciones) {
+    private static void realizarTransferencia(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones) {
         int cuentaCount = 0;
         for (int i = 0; i < usuario.getListaCuentas().length; i++) {
             if (usuario.getListaCuentas()[i] != null) {
@@ -885,7 +924,7 @@ public class Metodos {
 
         if (cuentaCount == 0) {
             JOptionPane.showMessageDialog(null, "Usted no tiene cuentas asociadas");
-            menuCliente(cuentas, usuario, usuarios);
+            menuCliente(cuentas, usuario, usuarios, transacciones);
         } else if (cuentaCount == 1) {
             cuentaTransaccion = usuario.getListaCuentas()[0];
         } else {
@@ -903,7 +942,7 @@ public class Metodos {
 
         if (cuentaTransaccion.getSaldo() == 0) {
             JOptionPane.showMessageDialog(null, "La cuenta seleccionada no tiene saldo");
-            realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones, cantidadTransacciones);
+            realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
         }
 
         int numeroCuentaDestino = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el numero de cuenta destino: "));
@@ -912,14 +951,14 @@ public class Metodos {
         Cuenta cuentaDestino = buscarCuentaNumero(cuentas, numeroCuentaDestino);
         if (cuentaDestino == null) {
             JOptionPane.showMessageDialog(null, "El numero de cuenta destino no se encuentra registrado en el sistema");
-            realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones, cantidadTransacciones);
+            realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
         }
 
         double montoDepositar = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el monto a depositar: "));
 
         if (montoDepositar > cuentaTransaccion.getSaldo()) {
             JOptionPane.showMessageDialog(null, "El monto a depositar es mayor al saldo de la cuenta");
-            realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones, cantidadTransacciones);
+            realizarTransferencia(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
         }
 
         String detalleTransferencia = JOptionPane.showInputDialog(null, "Ingrese el detalle de la transferencia: ");
@@ -927,17 +966,27 @@ public class Metodos {
         cuentaDestino.setSaldo(cuentaDestino.getSaldo() + montoDepositar);
 
         Transaccion nuevaTransferencia = new Transaccion(cuentaTransaccion, cuentaDestino, detalleTransferencia, montoDepositar);
-
-        if (cantidadTransacciones < transacciones.length) {
-            transacciones[cantidadTransacciones] = nuevaTransferencia;
-            cantidadTransacciones++;
-        }
+        transacciones[getIndexTransaccion(transacciones)] = nuevaTransferencia;
 
         JOptionPane.showMessageDialog(null, "Transferencia exitosa");
 
+        // asignar la transaccion al usuario
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] != null) {
+                if (usuarios[i].getId() == usuario.getId()) {
+                    for (int j = 0; j < usuarios[i].getHistorialTransacciones().length; j++) {
+                        if (usuarios[i].getHistorialTransacciones()[j] == null) {
+                            usuarios[i].getHistorialTransacciones()[j] = nuevaTransferencia;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
-    private static void realizarCompra(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones, int cantidadTransacciones) {
+    private static void realizarCompra(Usuario usuario, Cuenta cuentas[], Cuenta cuentaTransaccion, Usuario usuarios[], Transaccion[] transacciones) {
         int cuentaCount = 0;
         for (int i = 0; i < usuario.getListaCuentas().length; i++) {
             if (usuario.getListaCuentas()[i] != null) {
@@ -947,7 +996,7 @@ public class Metodos {
 
         if (cuentaCount == 0) {
             JOptionPane.showMessageDialog(null, "Usted no tiene cuentas asociadas");
-            menuCliente(cuentas, usuario, usuarios);
+            menuCliente(cuentas, usuario, usuarios, transacciones);
         } else if (cuentaCount == 1) {
             cuentaTransaccion = usuario.getListaCuentas()[0];
         } else {
@@ -967,21 +1016,31 @@ public class Metodos {
 
         if (montoPagar > cuentaTransaccion.getSaldo()) {
             JOptionPane.showMessageDialog(null, "El monto a pagar es mayor al saldo de la cuenta");
-            realizarRetiro(usuario, cuentas, cuentaTransaccion, usuarios, transacciones, cantidadTransacciones);
+            realizarRetiro(usuario, cuentas, cuentaTransaccion, usuarios, transacciones);
         } else {
             cuentaTransaccion.setSaldo(cuentaTransaccion.getSaldo() - montoPagar);
         }
 
         String detalleCompra = JOptionPane.showInputDialog(null, "Ingrese el detalle de la compra: ");
 
-        Transaccion nuevoRetiro = new Transaccion(cuentaTransaccion, null, detalleCompra, montoPagar);
-
-        if (cantidadTransacciones < transacciones.length) {
-            transacciones[cantidadTransacciones] = nuevoRetiro;
-            cantidadTransacciones++;
-        }
+        Transaccion nuevaCompra = new Transaccion(cuentaTransaccion, null, detalleCompra, montoPagar);
+        transacciones[getIndexTransaccion(transacciones)] = nuevaCompra;
 
         JOptionPane.showMessageDialog(null, "Compra exitosa");
+
+        // asignar la transaccion al usuario
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] != null) {
+                if (usuarios[i].getId() == usuario.getId()) {
+                    for (int j = 0; j < usuarios[i].getHistorialTransacciones().length; j++) {
+                        if (usuarios[i].getHistorialTransacciones()[j] == null) {
+                            usuarios[i].getHistorialTransacciones()[j] = nuevaCompra;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static void mostrarTransacciones(Transaccion[] transacciones) {
@@ -995,6 +1054,27 @@ public class Metodos {
                 }
             }
         }
+    }
+
+    private static int getIndexTransaccion(Transaccion[] transacciones) {
+        for (int i = 0; i < transacciones.length; i++) {
+            if (transacciones[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static Transaccion buscarTransaccionNum(Transaccion transacciones[], int idBuscar) {
+        for (int i = 0; i < transacciones.length; i++) {
+            if (transacciones[i] == null) {
+                return null;
+            }
+            if (transacciones[i].getId() == idBuscar) {
+                return transacciones[i];
+            }
+        }
+        return null;
     }
 
 }

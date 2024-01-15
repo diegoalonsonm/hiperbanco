@@ -6,7 +6,7 @@ public class Main {
         // creacion de arreglos
         Usuario usuarios[] = new Usuario[30];
         Cuenta cuentas[] = new Cuenta[50];
-        Transaccion transacciones[] = new Transaccion[50];
+        Transaccion transacciones[] = new Transaccion[100];
         boolean generados = false;
         Usuario usuarioLogin = null;
 
@@ -33,7 +33,7 @@ public class Main {
                     if (usuarioLogin == null) {
                         JOptionPane.showMessageDialog(null, "Ingrese de nuevo el usuario");
                     } else {
-                        Metodos.menuCliente(cuentas, usuarioLogin, usuarios);
+                        Metodos.menuCliente(cuentas, usuarioLogin, usuarios, transacciones);
                     }
                 }
             }
